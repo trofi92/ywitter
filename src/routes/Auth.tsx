@@ -1,20 +1,33 @@
 import { useReducer } from "react";
+import { auth } from "../firebase";
+import {
+ createUserWithEmailAndPassword,
+ signInWithEmailAndPassword,
+ GoogleAuthProvider,
+ GithubAuthProvider,
+ signInWithPopup,
+ AuthProvider,
+} from "firebase/auth";
+import { FirebaseError } from "firebase/app";
 
 type State = {
  email: string;
  password: string;
  newAccount: boolean;
+ error: string;
 };
 
 type Action =
  | { type: "SET_EMAIL"; payload: string }
  | { type: "SET_PASSWORD"; payload: string }
- | { type: "SET_NEW_ACCOUNT"; payload: boolean };
+ | { type: "SET_NEW_ACCOUNT"; payload: boolean }
+ | { type: "SET_ERROR"; payload: string };
 
 const initialState: State = {
  email: "",
  password: "",
  newAccount: true,
+ error: "",
 };
 
 const reducer = (state: State, action: Action): State => {
@@ -25,6 +38,9 @@ const reducer = (state: State, action: Action): State => {
    return { ...state, password: action.payload };
   case "SET_NEW_ACCOUNT":
    return { ...state, newAccount: action.payload };
+  case "SET_ERROR":
+   return { ...state, error: action.payload };
+
   default:
    return state;
  }
@@ -32,6 +48,10 @@ const reducer = (state: State, action: Action): State => {
 
 const Auth = () => {
  const [state, dispatch] = useReducer(reducer, initialState);
+
+ const toggleAccount = () => {
+  dispatch({ type: "SET_NEW_ACCOUNT", payload: !state.newAccount });
+ };
 
  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
   const { name, value } = event.target;
@@ -42,23 +62,55 @@ const Auth = () => {
   }
  };
 
- const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-  event.preventDefault();
-  if (state.newAccount) {
-   //todo : createAccount Logic
-  } else {
-   //todo : log in Logic
+ const onSocialClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const { name } = event.target;
+  let provider: AuthProvider | undefined = undefined;
+  if (name === "google") {
+   provider = new GoogleAuthProvider();
+  } else if (name === "github") {
+   provider = new GithubAuthProvider();
   }
-  console.log("submit");
+  if (provider) {
+   try {
+    const data = await signInWithPopup(auth, provider);
+   } catch (error: unknown) {
+    //TODO : Wrapper로 감싸서 에러 처리 해주기 > 원인이나 에러코드 노출되지 않도록 (Proxy)
+    if (error instanceof FirebaseError) {
+     dispatch({ type: "SET_ERROR", payload: error.code });
+    }
+   }
+  }
+ };
+
+ const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+  event.preventDefault();
+  try {
+   let data;
+   if (state.newAccount) {
+    data = await createUserWithEmailAndPassword(
+     auth,
+     state.email,
+     state.password,
+    );
+   } else {
+    data = await signInWithEmailAndPassword(auth, state.email, state.password);
+   }
+  } catch (error: unknown) {
+   //TODO : Wrapper로 감싸서 에러 처리 해주기 > 원인이나 에러코드 노출되지 않도록 (Proxy)
+   if (error instanceof FirebaseError) {
+    dispatch({ type: "SET_ERROR", payload: error.code });
+   }
+  }
  };
 
  return (
   <>
-   <form>
+   <form onSubmit={onSubmit}>
     <input
      name="email"
      type="email"
      placeholder="email"
+     required
      value={state.email}
      onChange={onChange}
     />
@@ -66,6 +118,7 @@ const Auth = () => {
      name="password"
      type="password"
      placeholder="Password"
+     required
      value={state.password}
      onChange={onChange}
     />
@@ -73,10 +126,18 @@ const Auth = () => {
      type="submit"
      value={state.newAccount ? "Create Account" : "Log In"}
     />
+    {state.error}
    </form>
+   <span onClick={toggleAccount}>
+    {state.newAccount ? "Sign In" : "Create Account"}
+   </span>
    <div>
-    <button>Continue with Google</button>
-    <button>Continue with Github</button>
+    <button onClick={onSocialClick} name="google">
+     Continue with Google
+    </button>
+    <button onClick={onSocialClick} name="github">
+     Continue with Github
+    </button>
    </div>
   </>
  );
