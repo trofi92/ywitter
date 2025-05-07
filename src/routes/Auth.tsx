@@ -62,17 +62,21 @@ const Auth = () => {
   }
  };
 
- const onSocialClick = async (event: React.ChangeEvent<HTMLInputElement>) => {
-  const { name } = event.target;
+ const onSocialClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const { name } = event.currentTarget;
   let provider: AuthProvider | undefined = undefined;
   if (name === "google") {
-   provider = new GoogleAuthProvider();
+   provider = new GoogleAuthProvider().setCustomParameters({
+    prompt: "select_account",
+   });
   } else if (name === "github") {
-   provider = new GithubAuthProvider();
+   provider = new GithubAuthProvider().setCustomParameters({
+    prompt: "select_account",
+   });
   }
   if (provider) {
    try {
-    const data = await signInWithPopup(auth, provider);
+    await signInWithPopup(auth, provider);
    } catch (error: unknown) {
     //TODO : Wrapper로 감싸서 에러 처리 해주기 > 원인이나 에러코드 노출되지 않도록 (Proxy)
     if (error instanceof FirebaseError) {
@@ -85,15 +89,10 @@ const Auth = () => {
  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   try {
-   let data;
    if (state.newAccount) {
-    data = await createUserWithEmailAndPassword(
-     auth,
-     state.email,
-     state.password,
-    );
+    await createUserWithEmailAndPassword(auth, state.email, state.password);
    } else {
-    data = await signInWithEmailAndPassword(auth, state.email, state.password);
+    await signInWithEmailAndPassword(auth, state.email, state.password);
    }
   } catch (error: unknown) {
    //TODO : Wrapper로 감싸서 에러 처리 해주기 > 원인이나 에러코드 노출되지 않도록 (Proxy)
