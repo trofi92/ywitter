@@ -1,5 +1,6 @@
-export interface Yweet {
+export interface YweetType {
  id: string;
  text?: string;
  createdAt?: number;
+ creatorId?: string;
 }

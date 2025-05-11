@@ -8,17 +8,12 @@ import {
  query,
 } from "firebase/firestore";
 import { User } from "firebase/auth";
-
-interface Yweet {
- id: string;
- text?: string;
- createdAt?: number;
- creatorId?: string;
-}
+import Yweet from "../components/Yweet";
+import { YweetType } from "../types/yweet.types";
 
 const Home = ({ userObj }: { userObj: User | null }) => {
  const [yweet, setYweet] = useState("");
- const [getEveryYweets, setGetEveryYweets] = useState<Yweet[]>([]);
+ const [getEveryYweets, setGetEveryYweets] = useState<YweetType[]>([]);
 
  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
@@ -41,7 +36,7 @@ const Home = ({ userObj }: { userObj: User | null }) => {
    const yweetArray = snapshot.docs.map((doc) => ({
     id: doc.id,
     ...doc.data(),
-   })) as Yweet[];
+   })) as YweetType[];
    setGetEveryYweets(yweetArray);
   });
 
@@ -62,11 +57,11 @@ const Home = ({ userObj }: { userObj: User | null }) => {
    </form>
    <div>
     {getEveryYweets.map((yweet) => (
-     <div key={yweet.id}>
-      <h4>{yweet.text}</h4>
-      <p>작성자: {yweet.creatorId}</p>
-      <p>작성시간: {new Date(yweet.createdAt || 0).toLocaleString()}</p>
-     </div>
+     <Yweet
+      key={yweet.id}
+      yweetObj={yweet}
+      isOwner={yweet.creatorId === userObj?.uid}
+     />
     ))}
    </div>
   </>
