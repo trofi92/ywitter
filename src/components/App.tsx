@@ -46,7 +46,6 @@ function App() {
    ) : (
     "initializing..."
    )}
-   <footer>&copy; {new Date().getFullYear()} Ywitter</footer>
   </>
  );
 }

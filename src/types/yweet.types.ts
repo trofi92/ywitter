@@ -3,4 +3,5 @@ export interface YweetType {
  text?: string;
  createdAt?: number;
  creatorId?: string;
+ attachmentUrl?: string;
 }

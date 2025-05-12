@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { YweetType } from "../types/yweet.types";
-import { db } from "../firebase";
+import { db, deleteObject, ref, storage } from "../firebase";
 
 interface YweetProps {
  yweetObj: YweetType;
@@ -14,8 +14,10 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
 
  const onDeleteClick = async () => {
   const ok = window.confirm("Are you sure you want to delete this yweet?");
-  if (ok) {
-   await deleteDoc(doc(db, "yweets", `${yweetObj.id}`));
+  if (ok) await deleteDoc(doc(db, "yweets", `${yweetObj.id}`));
+  if (yweetObj.attachmentUrl) {
+   const imageRef = ref(storage, yweetObj.attachmentUrl);
+   await deleteObject(imageRef);
   }
  };
 
@@ -49,6 +51,9 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
    ) : (
     <>
      <h4>{yweetObj.text}</h4>
+     {yweetObj.attachmentUrl && (
+      <img src={yweetObj.attachmentUrl} width="50px" height="50px" />
+     )}
      {isOwner && (
       <>
        <button onClick={onDeleteClick}>Delete Yweet</button>
