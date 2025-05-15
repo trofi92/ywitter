@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { YweetType } from "../types/yweet.types";
 import { db, deleteObject, ref, storage } from "../firebase";
@@ -10,7 +10,7 @@ interface YweetProps {
 
 const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
  const [editing, setEditing] = useState(false);
- const [newYweet, setNewYweet] = useState(yweetObj.text);
+ const inputRef = useRef<HTMLInputElement>(null);
 
  const onDeleteClick = async () => {
   const ok = window.confirm("Are you sure you want to delete this yweet?");
@@ -25,18 +25,12 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
   setEditing((prev) => !prev);
  };
 
- const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const { value } = event.target;
-  setNewYweet(value);
- };
-
  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
   await updateDoc(doc(db, "yweets", `${yweetObj.id}`), {
-   text: newYweet,
+   text: inputRef.current?.value,
   });
   setEditing(false);
-  setNewYweet("");
  };
 
  return (
@@ -44,7 +38,7 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
    {editing ? (
     <>
      <form onSubmit={onSubmit}>
-      <input onChange={onChange} value={newYweet} required />
+      <input ref={inputRef} required />
      </form>
      <button onClick={toggleEditing}>Cancel</button>
     </>

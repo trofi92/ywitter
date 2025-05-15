@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth";
+import { User, getAuth, updateProfile } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 import {
  getStorage,
@@ -14,6 +14,9 @@ import {
  onSnapshot,
  orderBy,
  query,
+ where,
+ getDoc,
+ getDocs,
 } from "firebase/firestore";
 
 const firebaseConfig = {
@@ -29,5 +32,20 @@ const firebase = initializeApp(firebaseConfig);
 export const auth = getAuth(firebase);
 export const db = getFirestore(firebase);
 export const storage = getStorage(firebase);
-export { addDoc, collection, onSnapshot, orderBy, query };
-export { ref, uploadString, getDownloadURL, deleteObject };
+export {
+ addDoc,
+ collection,
+ onSnapshot,
+ orderBy,
+ query,
+ where,
+ getDoc,
+ getDocs,
+ updateProfile,
+ ref,
+ uploadString,
+ getDownloadURL,
+ deleteObject,
+};
+
+export type { User };

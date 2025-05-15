@@ -1,4 +1,4 @@
-import { User } from "firebase/auth";
+import { User } from "../firebase";
 
 // 리듀서 타입 정의
 export type Reducer<S, A> = (state: S, action: A) => S;

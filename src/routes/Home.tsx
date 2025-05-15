@@ -35,16 +35,13 @@ const Home = ({ userObj }: { userObj: User | null }) => {
   const theFile = files?.[0];
   const reader = new FileReader();
   reader.onloadend = (finishedEvent) => {
-   const curTarget = finishedEvent.currentTarget as FileReader;
-   const { result } = curTarget;
+   const { result } = finishedEvent.currentTarget as FileReader;
    if (result) setAttachment(result as string);
   };
   if (theFile) reader.readAsDataURL(theFile);
  };
 
- const onClearAttachment = () => {
-  setAttachment("");
- };
+ const onClearAttachment = () => setAttachment("");
 
  useEffect(() => {
   const q = query(collection(db, "yweets"), orderBy("createdAt", "desc"));
@@ -55,7 +52,6 @@ const Home = ({ userObj }: { userObj: User | null }) => {
    })) as YweetType[];
    setGetEveryYweets(yweetArray);
   });
-
   return () => unsubscribe();
  }, []);
 
