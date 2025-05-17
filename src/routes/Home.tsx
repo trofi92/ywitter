@@ -22,9 +22,9 @@ const Home = ({ userObj }: { userObj: User | null }) => {
  }, []);
 
  return (
-  <>
+  <div className="container">
    <YweetFactory userObj={userObj} />
-   <div>
+   <div className="yweetList">
     {getEveryYweets.map((yweet) => (
      <Yweet
       key={yweet.id}
@@ -33,7 +33,7 @@ const Home = ({ userObj }: { userObj: User | null }) => {
      />
     ))}
    </div>
-  </>
+  </div>
  );
 };
 

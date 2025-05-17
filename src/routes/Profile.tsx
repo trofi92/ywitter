@@ -52,10 +52,21 @@ const Profile = ({
  }, []);
 
  return (
-  <>
-   <form onSubmit={onSubmit}>
-    <input type="text" ref={inputRef} placeholder="Display Name" />
-    <input type="submit" value="Update Profile" />
+  <div className="container">
+   <form onSubmit={onSubmit} className="profileForm">
+    <input
+     type="text"
+     ref={inputRef}
+     placeholder="Display Name"
+     autoFocus
+     className="formInput"
+    />
+    <input
+     type="submit"
+     value="Update Profile"
+     className="formBtn"
+     style={{ marginTop: "10px" }}
+    />
    </form>
    <h1>{userObj?.displayName}</h1>
    <div>
@@ -70,9 +81,11 @@ const Profile = ({
       </div>
      ))}
     </div>
-    <button onClick={onLogOutClick}>Log Out</button>
+    <span className="formBtn cancelBtn logOut" onClick={onLogOutClick}>
+     Log Out
+    </span>
    </div>
-  </>
+  </div>
  );
 };
 

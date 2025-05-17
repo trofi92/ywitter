@@ -17,21 +17,21 @@ const AppRouter = ({
  return (
   <Router>
    {isLoggedIn && <Navigation userObj={userObj} />}
-   <Routes>
-    {isLoggedIn ? (
-     <>
-      <Route path="/" element={<Home userObj={userObj} />} />
-      <Route
-       path="/profile"
-       element={<Profile userObj={userObj} refreshUser={refreshUser} />}
-      />
-     </>
-    ) : (
-     <>
+   <div className="routerContainer">
+    <Routes>
+     {isLoggedIn ? (
+      <>
+       <Route path="/" element={<Home userObj={userObj} />} />
+       <Route
+        path="/profile"
+        element={<Profile userObj={userObj} refreshUser={refreshUser} />}
+       />
+      </>
+     ) : (
       <Route path="/" element={<Auth />} />
-     </>
-    )}
-   </Routes>
+     )}
+    </Routes>
+   </div>
   </Router>
  );
 };

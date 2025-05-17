@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { deleteDoc, doc, updateDoc } from "firebase/firestore";
 import { YweetType } from "../types/yweet.types";
 import { db, deleteObject, ref, storage } from "../firebase";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrash, faPencilAlt } from "@fortawesome/free-solid-svg-icons";
 
 interface YweetProps {
  yweetObj: YweetType;
@@ -34,13 +36,22 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
  };
 
  return (
-  <div>
+  <div className="yweet">
    {editing ? (
     <>
-     <form onSubmit={onSubmit}>
-      <input ref={inputRef} required />
+     <form onSubmit={onSubmit} className="container yweetEdit">
+      <input
+       ref={inputRef}
+       required
+       placeholder="Edit your yweet"
+       autoFocus
+       className="formInput"
+      />
+      <input type="submit" value="Update Yweet" className="formBtn" />
      </form>
-     <button onClick={toggleEditing}>Cancel</button>
+     <button onClick={toggleEditing} className="formBtn cancelBtn">
+      Cancel
+     </button>
     </>
    ) : (
     <>
@@ -49,10 +60,14 @@ const Yweet = ({ yweetObj, isOwner }: YweetProps) => {
       <img src={yweetObj.attachmentUrl} width="50px" height="50px" />
      )}
      {isOwner && (
-      <>
-       <button onClick={onDeleteClick}>Delete Yweet</button>
-       <button onClick={toggleEditing}>Edit Yweet</button>
-      </>
+      <div className="yweet__actions">
+       <span onClick={onDeleteClick}>
+        <FontAwesomeIcon icon={faTrash} />
+       </span>
+       <span onClick={toggleEditing}>
+        <FontAwesomeIcon icon={faPencilAlt} />
+       </span>
+      </div>
      )}
     </>
    )}

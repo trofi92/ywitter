@@ -1,5 +1,4 @@
 {
- "homepage": "https://trofi92.github.io/ywitter",
  "name": "ywitter",
  "private": true,
  "version": "0.0.0",
@@ -13,6 +12,12 @@
   "deploy": "gh-pages -d dist"
  },
  "dependencies": {
+  "@fortawesome/fontawesome-free": "^6.7.2",
+  "@fortawesome/fontawesome-svg-core": "^6.7.2",
+  "@fortawesome/free-brands-svg-icons": "^6.7.2",
+  "@fortawesome/free-regular-svg-icons": "^6.7.2",
+  "@fortawesome/free-solid-svg-icons": "^6.7.2",
+  "@fortawesome/react-fontawesome": "^0.2.2",
   "firebase": "^11.6.1",
   "gh-pages": "^6.3.0",
   "react": "^19.0.0",
