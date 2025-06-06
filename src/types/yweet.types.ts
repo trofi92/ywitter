@@ -5,3 +5,7 @@ export interface YweetType {
  creatorId?: string;
  attachmentUrl?: string;
 }
+export interface YweetProps {
+ yweetObj: YweetType;
+ isOwner: boolean;
+}

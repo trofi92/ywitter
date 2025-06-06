@@ -1,6 +1,5 @@
 import { initializeApp } from "firebase/app";
 import { User, getAuth, updateProfile } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
 import {
  getStorage,
  ref,
@@ -17,6 +16,7 @@ import {
  where,
  getDoc,
  getDocs,
+ getFirestore,
 } from "firebase/firestore";
 
 const firebaseConfig = {

@@ -73,7 +73,7 @@ const Profile = ({
     <h2>My Yweets</h2>
     <div>
      {myYweets.map((yweet) => (
-      <div key={yweet.id}>
+      <div key={yweet.id} className="yweet">
        <h4>{yweet.text}</h4>
        {yweet.attachmentUrl && (
         <img src={yweet.attachmentUrl} width="50px" height="50px" />

@@ -17,26 +17,25 @@ const YweetFactory = ({ userObj }: { userObj: User | null }) => {
    return;
   }
 
-  if (!attachment) {
-   alert("파일을 선택해 주세요.");
-   return;
-  }
-
   try {
-   const attachmentRef = ref(storage, `files/${userObj?.uid}/${uuidv4()}`);
-   const response = await uploadString(attachmentRef, attachment, "data_url");
+   let attachmentUrl = "";
 
-   if (!response) {
-    throw new Error("파일 업로드에 실패했습니다.");
+   if (attachment) {
+    const attachmentRef = ref(storage, `files/${userObj?.uid}/${uuidv4()}`);
+    const response = await uploadString(attachmentRef, attachment, "data_url");
+
+    if (!response) {
+     throw new Error("파일 업로드에 실패했습니다.");
+    }
+
+    attachmentUrl = await getDownloadURL(response.ref);
    }
-
-   const attachmentUrl = await getDownloadURL(response.ref);
 
    await addDoc(collection(db, "yweets"), {
     text: inputRef.current?.value,
     createdAt: Date.now(),
     creatorId: userObj?.uid,
-    attachmentUrl: attachmentUrl,
+    attachmentUrl,
    });
 
    if (inputRef.current) inputRef.current.value = "";
