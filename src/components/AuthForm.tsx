@@ -3,45 +3,15 @@ import {
  createUserWithEmailAndPassword,
  signInWithEmailAndPassword,
 } from "firebase/auth";
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { auth } from "../firebase";
-type State = {
- email: string;
- password: string;
- newAccount: boolean;
- error: string;
-};
+import { reducer, initialState } from "../types/auth.types";
+import { authSchema, type AuthFormData } from "../schemas/auth.schema";
+import { z } from "zod";
 
-type Action =
- | { type: "SET_EMAIL"; payload: string }
- | { type: "SET_PASSWORD"; payload: string }
- | { type: "SET_NEW_ACCOUNT"; payload: boolean }
- | { type: "SET_ERROR"; payload: string };
-
-const initialState: State = {
- email: "",
- password: "",
- newAccount: true,
- error: "",
-};
-
-const reducer = (state: State, action: Action): State => {
- switch (action.type) {
-  case "SET_EMAIL":
-   return { ...state, email: action.payload };
-  case "SET_PASSWORD":
-   return { ...state, password: action.payload };
-  case "SET_NEW_ACCOUNT":
-   return { ...state, newAccount: action.payload };
-  case "SET_ERROR":
-   return { ...state, error: action.payload };
-
-  default:
-   return state;
- }
-};
 const AuthForm = () => {
  const [state, dispatch] = useReducer(reducer, initialState);
+ const [errors, setErrors] = useState<Partial<AuthFormData>>({});
 
  const toggleAccount = () => {
   dispatch({ type: "SET_NEW_ACCOUNT", payload: !state.newAccount });
@@ -55,8 +25,33 @@ const AuthForm = () => {
    dispatch({ type: "SET_PASSWORD", payload: value });
   }
  };
+
+ const validateForm = (): boolean => {
+  try {
+   authSchema.parse({
+    email: state.email,
+    password: state.password,
+   });
+   setErrors({});
+   return true;
+  } catch (error) {
+   if (error instanceof z.ZodError) {
+    const newErrors: Partial<AuthFormData> = {};
+    error.errors.forEach((err) => {
+     if (err.path[0]) {
+      newErrors[err.path[0] as keyof AuthFormData] = err.message;
+     }
+    });
+    setErrors(newErrors);
+   }
+   return false;
+  }
+ };
+
  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
   event.preventDefault();
+  if (!validateForm()) return;
+
   try {
    if (state.newAccount) {
     await createUserWithEmailAndPassword(auth, state.email, state.password);
@@ -70,6 +65,7 @@ const AuthForm = () => {
    }
   }
  };
+
  return (
   <>
    <form onSubmit={onSubmit} className="container">
@@ -82,6 +78,8 @@ const AuthForm = () => {
      onChange={onChange}
      className="authInput"
     />
+    {errors.email && <span className="error-message">{errors.email}</span>}
+
     <input
      name="password"
      type="password"
@@ -91,6 +89,10 @@ const AuthForm = () => {
      onChange={onChange}
      className="authInput"
     />
+    {errors.password && (
+     <span className="error-message">{errors.password}</span>
+    )}
+
     <input
      type="submit"
      value={state.newAccount ? "Create Account" : "Log In"}

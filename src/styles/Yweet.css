@@ -1,12 +1,98 @@
+.yweet {
+ background-color: white;
+ border-radius: 10px;
+ padding: 20px;
+ margin-bottom: 16px;
+ box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+ position: relative;
+ display: flex;
+ flex-direction: column;
+ color: rgba(0, 0, 0, 0.8);
+ animation: fadeIn 0.3s ease-in-out;
+}
+
+.yweet h4 {
+ margin: 0;
+ font-size: 16px;
+ line-height: 1.4;
+ color: #14171a;
+}
+
 .yweet__thumbnail {
  cursor: pointer;
  transition: transform 0.2s ease-in-out;
  border-radius: 4px;
  object-fit: cover;
+ margin-top: 10px;
 }
 
 .yweet__thumbnail:hover {
  transform: scale(1.05);
+}
+
+.yweet__actions {
+ position: absolute;
+ right: 10px;
+ top: 10px;
+ display: flex;
+ gap: 10px;
+}
+
+.yweet__actions span {
+ cursor: pointer;
+ color: #1da1f2;
+ transition: color 0.2s ease-in-out;
+}
+
+.yweet__actions span:hover {
+ color: #1a91da;
+}
+
+.yweetEdit {
+ width: 100%;
+ display: flex;
+ flex-direction: column;
+ gap: 16px;
+}
+
+.yweetEdit .formInput {
+ width: 100%;
+ padding: 10px;
+ border: 1px solid #e0e0e0;
+ border-radius: 5px;
+ font-size: 16px;
+ transition: border-color 0.2s ease-in-out;
+}
+
+.yweetEdit .formInput:focus {
+ outline: none;
+ border-color: #1da1f2;
+}
+
+.yweetEdit .formBtn {
+ width: 100%;
+ padding: 12px;
+ background-color: #1da1f2;
+ color: white;
+ border: none;
+ border-radius: 5px;
+ font-size: 16px;
+ font-weight: 600;
+ cursor: pointer;
+ transition: all 0.2s ease-in-out;
+}
+
+.yweetEdit .formBtn:hover {
+ background-color: #1a91da;
+}
+
+.yweetEdit .cancelBtn {
+ background-color: #e0e0e0;
+ color: #333;
+}
+
+.yweetEdit .cancelBtn:hover {
+ background-color: #d0d0d0;
 }
 
 .modal-overlay {
